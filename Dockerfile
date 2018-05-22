@@ -1,0 +1,37 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+FROM alpine:3.6
+
+ENV HG_VERSION=4.4
+
+RUN apk update \
+    && apk add --no-cache bash python2 ca-certificates apache2 \
+    && apk add --no-cache --virtual build-dependencies build-base python-dev py-pip \
+    && pip install --no-cache --upgrade pip \
+    && pip install --no-cache "mercurial>=$HG_VERSION,<$HG_VERSION.99" \
+    && mkdir -p /etc/mercurial /repos /run/apache2
+
+COPY hgrc /etc/mercurial
+COPY requirements.txt /
+COPY entrypoint.sh /
+COPY hgweb.cgi /var/www/localhost/htdocs
+COPY hgweb.config /repos
+COPY hgweb-httpd.conf /etc/apache2/conf.d
+
+RUN pip install -r /requirements.txt \
+    && apk del build-dependencies
+
+RUN hg init /repos/test-repo \
+    && cd /repos/test-repo \
+    && echo test-repo > readme \
+    && hg commit -Am 'initial commit' \
+    && hg phase --public -r . \
+    && cp -a /repos/test-repo /repos/land-repo \
+    && cp -a /repos/test-repo /repos/try \
+    && echo -e '[phases]\npublish = false' > /repos/test-repo/.hg/hgrc \
+    && chown -R apache:apache /repos /run/apache2
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["start"]

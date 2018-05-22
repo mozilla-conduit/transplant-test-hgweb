@@ -1,0 +1,6 @@
+version: '2'
+services:
+    hgweb:
+        build: .
+        ports:
+            - "8000:80"

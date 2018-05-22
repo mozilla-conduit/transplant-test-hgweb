@@ -1,0 +1,23 @@
+[ui]
+username = hgweb@example.com <hgweb>
+interactive = False
+
+[web]
+allow_push = *
+push_ssl = false
+
+[format]
+generaldelta = true
+
+[phases]
+publish = true
+
+[server]
+validate = true
+
+# make tests deterministic by pinning the date
+[defaults]
+backout = -d "0 0"
+commit = -d "0 0"
+shelve = --date "0 0"
+tag = -d "0 0"
