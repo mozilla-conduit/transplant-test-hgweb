@@ -7,11 +7,11 @@ jobs:
       - run:
           name: build image
           command: |
-            docker build -t "$DOCKER_REPO:latest" .
+            docker build -t "$DOCKER_REPO:$CIRCLE_BUILD_NUM" .
       - deploy:
           name: upload to dockerhub
           command: |
             if [[ -n "$DOCKER_USER" ]]; then
               docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-              docker push "$DOCKER_REPO:latest"
+              docker push "$DOCKER_REPO:$CIRCLE_BUILD_NUM"
             fi
