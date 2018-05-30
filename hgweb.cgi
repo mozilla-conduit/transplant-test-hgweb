@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-config = "/repos/hgweb.config"
+config = "/hgweb.config"
 
 from mercurial import demandimport
 demandimport.enable()
