@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - cimg/base:current
+      - image: cimg/base:current
     steps:
       - checkout
       - setup_remote_docker
