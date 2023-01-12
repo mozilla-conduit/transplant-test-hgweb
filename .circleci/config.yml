@@ -1,9 +1,9 @@
 version: 2
 jobs:
   build:
-    machine: true
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: build image
           command: |
@@ -15,3 +15,7 @@ jobs:
               docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
               docker push "$DOCKER_REPO:$CIRCLE_BUILD_NUM"
             fi
+workflows:
+  build:
+    jobs:
+      - build
